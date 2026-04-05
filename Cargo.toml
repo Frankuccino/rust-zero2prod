@@ -5,3 +5,15 @@ edition = "2024"
 
 [dependencies]
 actix-web = "4.13.0"
+
+# Dev dependencies are used exclusively when running tests or examples
+# They do not get included in the final application binary!
+[dev-dependencies]
+reqwest = "0.13.2"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "zero2prod"
