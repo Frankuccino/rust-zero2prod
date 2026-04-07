@@ -24,7 +24,7 @@ async fn health_check_works() {
 // async fn spawn_app() -> std::io::Result<()> {
 fn spawn_app() {
   // zero2prod::run()?.await
-  let server = zero2prod::run().expect("Failed to bind address");
+  let server = zero2prod::run("127.0.0.1:0").expect("Failed to bind address");
 
   // Launc the server as a background task
   // tokio::spawn returns a handle to the spawned future,
