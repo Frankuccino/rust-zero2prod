@@ -32,7 +32,7 @@ fn spawn_app() -> String {
 
 
   let port = listener.local_addr().unwrap().port();
-  let server = zero2prod::run(listener).expect("Failed to bind address");
+  let server = zero2prod::startup::run(listener).expect("Failed to bind address");
 
   // Launc the server as a background task
   // tokio::spawn returns a handle to the spawned future,
