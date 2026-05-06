@@ -3823,6 +3823,7 @@ dependencies = [
  "reqwest",
  "serde 1.0.228",
  "sqlx",
+ "tracing",
  "uuid",
 ]
 
