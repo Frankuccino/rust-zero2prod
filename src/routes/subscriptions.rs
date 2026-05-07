@@ -16,6 +16,16 @@ pub async fn subscribe(
     pool: web::Data<PgPool>) 
     -> HttpResponse {
     let request_id = Uuid::new_v4();
+
+    let request_span = tracing::info_span!(
+        "Adding a new subscriber",
+        %request_id,
+        subscriber_email = %form.email,
+        subscriber_name = %form.name
+    );
+    
+    // Using `enter` in an async funciton is a recipe for disaster!
+    let _request_span_guard = request_span.enter();
     tracing::info!(
         "request_id {}- Adding '{}' '{}' as a new subscriber",
         request_id,
