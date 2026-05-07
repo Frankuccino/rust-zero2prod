@@ -1,3 +1,4 @@
+use tracing::Instrument;
 use uuid::Uuid;
 use chrono::Utc;
 
@@ -27,6 +28,11 @@ pub async fn subscribe(
     // Using `enter` in an async funciton is a recipe for disaster!
     let _request_span_guard = request_span.enter();
     
+    // We do not call `enter` on query_span!. `.instrument` takes care of it at the right moments in the query future lifetime
+    let query_span = tracing::info_span!(
+        "Saving new subscriber details in the database"
+    );
+
     match sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, subscribed_at)
@@ -38,21 +44,14 @@ pub async fn subscribe(
         Utc::now(),
     )
     .execute(pool.get_ref())
+    .instrument(query_span)
     .await
     {
         Ok(_) => {
-            tracing::info!(
-                "request_id {} - New subscriber details have been saved",
-                request_id
-            );
              HttpResponse::Ok().finish()
          },
         Err(e) => {
-            tracing::error!(
-                "request_id {} - Failed to execute query {:?}",
-                request_id,
-                e
-            );
+            tracing::error!("Failed to execute query: {:?}", e);
             println!("Failed to execute query: {}", e);
             HttpResponse::InternalServerError().finish()
         }
