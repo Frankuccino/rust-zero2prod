@@ -26,16 +26,7 @@ pub async fn subscribe(
     
     // Using `enter` in an async funciton is a recipe for disaster!
     let _request_span_guard = request_span.enter();
-    tracing::info!(
-        "request_id {}- Adding '{}' '{}' as a new subscriber",
-        request_id,
-        form.email,
-        form.name
-    );
-    tracing::info!(
-        "request_id {} - Saving new subscriber details in the database", 
-        request_id
-    );
+    
     match sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, subscribed_at)
